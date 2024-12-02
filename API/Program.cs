@@ -25,4 +25,18 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+
+try 
+{
+    var context = services.GetRequiredService<DataContext>();
+    await Seed.SeedData(context);
+}
+catch (Exception ex)
+{
+    var logger = services.GetRequiredService<Logger<Program>>();
+    logger.LogError(ex, "An error occured while seeding data");
+}
+
 app.Run();
