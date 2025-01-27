@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Domain.Enums;
 
-namespace Application.Characters;
+namespace Application.DTOs;
 
 public class CharacterDto
 {
@@ -18,4 +18,7 @@ public class CharacterDto
     public string? StarSign {get; set;}
     public string? DistinguishingMarks {get; set;}
     public int NumberOfSiblings {get; set;}
+
+    public StatsDto? BaseStats { get; set; }
+    public StatsDto? CurrentStats { get; set;}
 }

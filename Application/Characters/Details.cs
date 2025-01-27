@@ -24,7 +24,10 @@ public class Details
 
         public async Task<Result<Character>> Handle(Query request, CancellationToken cancellationToken)
         {
-            var character = await _context.Characters!.FirstOrDefaultAsync(c => c.Id == request.Id);
+            var character = await _context.Characters!
+                .Include(c => c.BaseStats)
+                .Include(c => c.CurrentStats)
+                .FirstOrDefaultAsync(c => c.Id == request.Id);
 
             if (character == null)
                 return Result<Character>.Failure("Character not found.");

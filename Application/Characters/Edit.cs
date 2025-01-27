@@ -1,7 +1,8 @@
 using Application.Core;
+using Application.DTOs;
 using AutoMapper;
-using Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Characters;
@@ -10,7 +11,8 @@ public class Edit
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public Character? Character { get; set; }
+        public int Id { get; set; }
+        public CharacterDto? Character { get; set; }
     }
 
     public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -26,10 +28,16 @@ public class Edit
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var character = await _context.Characters!.FindAsync(request.Character!.Id);
+            var character = await _context.Characters!
+            .Include(c => c.BaseStats)
+            .Include(c => c.CurrentStats)
+            .FirstOrDefaultAsync(p => p.Id == request.Id);
+
             if (character == null) return null!;
 
             _mapper.Map(request.Character, character);
+            _mapper.Map(request.Character!.BaseStats, character.BaseStats);
+            _mapper.Map(request.Character!.CurrentStats, character.CurrentStats);
 
             var result = await _context.SaveChangesAsync() > 0;
 

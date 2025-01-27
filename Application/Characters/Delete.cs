@@ -1,5 +1,6 @@
 using Application.Core;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Characters;
@@ -22,11 +23,15 @@ public class Delete
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var character = await _context.Characters!.FindAsync(request.Id);
+            var character = await _context.Characters!
+            .Include(c => c.BaseStats)
+            .Include(c => c.CurrentStats)
+            .FirstOrDefaultAsync(c => c.Id == request.Id);
 
             if (character == null) return null!;
 
-            _context.Characters.Remove(character);
+            _context.Characters!.Remove(character);
+            _context.Stats!.RemoveRange(character.BaseStats!, character.CurrentStats!);
 
             var result = await _context.SaveChangesAsync() > 0;
 

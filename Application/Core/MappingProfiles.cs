@@ -1,4 +1,5 @@
 using Application.Characters;
+using Application.DTOs;
 using AutoMapper;
 using Domain;
 
@@ -10,5 +11,7 @@ public class MappingProfiles : Profile
     {
         CreateMap<CharacterDto, Character>();
         CreateMap<Character, Character>();
+        CreateMap<StatsDto, Stats>();
+        CreateMap<Stats, Stats>();
     }
 }

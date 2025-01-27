@@ -80,7 +80,7 @@ namespace Persistence.Migrations
                     b.HasIndex("CurrentStatsId")
                         .IsUnique();
 
-                    b.ToTable("Characters");
+                    b.ToTable("Characters", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Stats", b =>
@@ -141,7 +141,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stats");
+                    b.ToTable("Stats", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Character", b =>

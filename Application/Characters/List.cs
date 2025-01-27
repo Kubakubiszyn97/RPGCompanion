@@ -22,7 +22,10 @@ public class List
 
 		public async Task<Result<List<Character>>> Handle(Query request, CancellationToken cancellationToken)
 		{
-			var characters = await _context.Characters!.ToListAsync();
+			var characters = await _context.Characters!
+				.Include(c => c.BaseStats)
+				.Include(c => c.CurrentStats)
+				.ToListAsync();
 			
 			return Result<List<Character>>.Success(characters);
 		}
